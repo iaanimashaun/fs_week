@@ -1,4 +1,5 @@
-from app.app import get_hash, verify_hash
+from app.app import get_hash, verify_hash, db
+import os
 import re
 import pytest
 
@@ -30,6 +31,33 @@ def test_hash_computation(testing_string):
     "email,password", [("hello@hello.com", "asd"), ("strive@strive.com", "asdasd")]
 )
 def test_user_creation(email, password):
+
+    db.conn.execute("DELETE FROM users")
+    db.conn.execute("COMMIT")
+
+    user_id = db.create_user(email, password)
+
+    # here I'm using the internal DB connection in the class to send a custom
+    # SQL query
+    # I'm doing this to get the email and the hashed password of the user we just
+    # created. The email should be the same one we have used in the
+    # db.create_user() function
+    result = db.conn.execute(
+        "SELECT * from users where user_id = ?", (user_id,)
+    ).fetchone()
+
+    # result is a tuple with 3 elements:
+    # (user_id, email, hashed_password)
+
+    user_id = result[0]
+    new_user_email = result[1]
+    hashed_password = result[2]
+
+    # make sure the emails match
+    assert new_user_email == email
+
+    assert db.validate_password(email, password)
+
     # TODO
     # examples of what to test
     # 1. verify user is created

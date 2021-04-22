@@ -1,0 +1,17 @@
+site_name: Full-Stack Machine Learning
+repo_url: https://github.com/polyrand/fs-week
+repo_name: polyrand/fs-week
+
+theme:
+   name: material
+   language: en
+   palette:
+    primary: blue grey
+plugins:
+  - search
+nav:
+  - Introduction: 'index.md'
+  - Documentation: 'documentation.md'
+  - Running the apps: 'running.md'
+  - Training: 'training.md'
+  - Models: 'models.md'
